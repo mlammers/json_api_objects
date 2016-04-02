@@ -16,19 +16,14 @@ module JsonApiObjects
     end
 
     def prepare
-      p extended_class
-      # p method(__method__).parameters
-
-      # set api object class (ApiObject.init(title, properties))
-      # 1. find class or create one
-      # @api_object_class = (title.classify rescue Class.new(title))
-      # p type
-      # 2. set properties, create attributes, setters and getters for each property
-      # properties.each do |prop_name, prop_values|
-        # if prop_values["type"]=="object"
-        #   recursive call to init  class
-      #   @api_object_class.class_eval(:attr_accessor, :prop)
-      # end
+      schema.properties.each do |property, config|
+        create_setter(property) unless extended_class.methods.include?(property)
+        create_getter(property) unless extended_class.methods.include?(property + "=")
+        create_api_object_method
+        if config["type"] == "object" #TODO: Create Config object with object? method
+          self.class.prepare(Schema.init(config))
+        end
+      end
     end
 
     private
@@ -47,24 +42,41 @@ module JsonApiObjects
       klass
     end
 
+    def create_setter(property)
+      extended_class.class_eval("def #{property}=(value);@#{property}=value;end")
+    end
+  
+    def create_getter(property)
+      extended_class.class_eval("def #{property};@#{property};end")
+    end
+
+    def create_api_object_method
+      # verify required attributes
+      # add all properties
+      # TODO: Create config object
+      # TODO: set object return to actually return the resp. object
+      extended_class.class_eval(
+<<EOF
+      def json_api_object
+        return_hash = {}
+        #{schema.properties}.each do |property, config|
+          return_hash[property] = case config["type"] 
+                                  when "object"
+                                    self.send(property.to_sym).json_api_object
+                                  else
+                                    self.send(property.to_sym)
+                                  end
+        end
+        return_hash.to_json
+      end
+EOF
+)
+    end
+
   end
 
   class Schema
 
-=begin
-    def initialize(title: nil,
-                   description: nil,
-                   type: nil,
-                   properties: nil,
-                   required: nil)
-      p self
-
-
-
-    def class << self
-      attr_accessor :schema
-    end
-=end
     attr_accessor :raw_schema, :errors, :api_object_class, :title, :type, :properties, :required_attributes
 
     def self.init(raw_schema)
