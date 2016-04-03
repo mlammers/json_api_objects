@@ -9,7 +9,6 @@ module JsonApiObjects
     def init
       validate
       process_errors unless errors.empty?
-      raw_schema.delete('$schema')
       set_attributes(symbolized_hash(raw_schema))
       self
     end
@@ -21,7 +20,9 @@ module JsonApiObjects
     end
 
     def validate
-      @errors = JSON::Validator.fully_validate('json_api_objects/validation_schema', raw_schema)
+      @errors = []
+      # TODO: Fix validation
+      #JSON::Validator.fully_validate(JsonApiObjects.root + 'lib/json_api_objects/validation_schema.rb', raw_schema)
     end
 
     def set_attributes(title:nil,
@@ -39,7 +40,7 @@ module JsonApiObjects
     def symbolized_hash(hash)
       new_hash = {}
       hash.each_key do |key|
-        new_hash[key.to_sym] = hash[key]
+        new_hash[key.to_sym] = hash[key] unless key == '$schema'
       end
       new_hash
     end
