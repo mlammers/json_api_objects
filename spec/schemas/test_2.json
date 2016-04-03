@@ -1,0 +1,37 @@
+//http://json-schema.org/draft-04/schema#definitions
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#", //written according to the draft v4 specification, what do we put here?
+  "title": "Test2", //
+  "description": "API return object for JobVersion",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "raw_job_id": {
+      "type": "integer"
+    },
+    "calculated_salary": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMinimum": true
+    },
+    "location_salaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          }
+          
+        },
+        "required": ["amount"]
+      }
+      
+    }
+  },
+  "required": ["id", "raw_job_id"]
+  
+}
