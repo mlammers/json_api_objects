@@ -8,7 +8,7 @@ module JsonApiObjects
 
     def prepare
       schema.properties.each do |property, config|
-        create_setter(property) unless extended_class.methods.include?(property)
+        # create_setter(property) unless extended_class.methods.include?(property)
         create_getter(property) unless extended_class.methods.include?(property + '=')
         create_api_object_method
         self.class.prepare(Schema.init(config)) if config['type'] == 'object' # TODO: Create Config object with object? method
