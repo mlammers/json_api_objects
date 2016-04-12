@@ -2,8 +2,7 @@
 
 {
   "$schema": "http://json-schema.org/draft-04/schema#", //written according to the draft v4 specification, what do we put here?
-  "title": "Test", //
-  "description": "API return object for JobVersion",
+  "description": "Test",
   "type": "object",
   "properties": {
     "id": {
@@ -20,6 +19,7 @@
     "location_salaries": {
       "type": "array",
       "items": {
+        "description": "LocationSalary",
         "type": "object",
         "properties": {
           "amount": {

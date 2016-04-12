@@ -1,6 +1,6 @@
 module JsonApiObjects
   class Schema
-    attr_accessor :raw_schema, :errors, :api_object_class, :title, :type, :properties, :required_attributes
+    attr_accessor :raw_schema, :errors, :api_object_class, :description, :type, :properties, :required_attributes
 
     def self.init(raw_schema)
       new(raw_schema).init
@@ -25,12 +25,10 @@ module JsonApiObjects
       #JSON::Validator.fully_validate(JsonApiObjects.root + 'lib/json_api_objects/validation_schema.rb', raw_schema)
     end
 
-    def set_attributes(title:nil,
-                       description: nil,
-                       type:nil,
-                       properties:nil,
-                       required:nil)
-      @title = title
+    def set_attributes(description: "",
+                       type:"",
+                       properties:{},
+                       required:[])
       @description = description
       @type = type
       @properties = properties

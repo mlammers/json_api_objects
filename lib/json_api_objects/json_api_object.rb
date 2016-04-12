@@ -8,10 +8,15 @@ module JsonApiObjects
 
     def prepare
       schema.properties.each do |property, config|
-        # create_setter(property) unless extended_class.methods.include?(property)
-        create_getter(property) unless extended_class.methods.include?(property + '=')
+        create_setter(property) unless extended_class.instance_methods.include?((property + '=').to_sym) 
+        create_getter(property) unless extended_class.instance_methods.include?(property.to_sym) 
         create_api_object_method
-        self.class.prepare(Schema.init(config)) if config['type'] == 'object' # TODO: Create Config object with object? method
+        case config['type']
+        when 'object'
+          self.class.prepare(Schema.init(schema.properties[property])) if config['type'] == 'object' # TODO: Create Config object with object? method
+        when 'array'
+          self.class.prepare(Schema.init(config['items'])) 
+        end
       end
     end
 
@@ -22,12 +27,12 @@ module JsonApiObjects
     end
 
     def extended_class
-      schema.title.split('::').inject(Object) do |mod, class_name|
+      schema.description.split('::').inject(Object) do |mod, class_name|
         mod.const_get(class_name)
       end
-    rescue => e
+    rescue NameError
       klass = Class.new
-      Object.const_set schema.title, klass
+      Object.const_set schema.description, klass
       klass
     end
 

@@ -24,7 +24,7 @@ describe JsonApiObjects::Schema do
   describe "#set_attributes" do
     it "sets attributes correctly" do
       subject.send(:set_attributes, symbolize_hash)
-      expect(subject.title).to eql symbolize_hash[:title]
+      expect(subject.description).to eql symbolize_hash[:description]
       expect(subject.type).to eql symbolize_hash[:type]
       expect(subject.properties).to eql symbolize_hash[:properties]
       expect(subject.required_attributes).to eql symbolize_hash[:required]
