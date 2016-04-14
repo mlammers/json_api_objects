@@ -59,7 +59,7 @@ module JsonApiObjects
                                     self.send(property.to_sym).json_api_object
                                   when "array"
                                     return_array = self.send(property.to_sym) || []
-                                    return_array.map(&:json_api_object)
+                                    return_array.map{ |object| JSON.parse object.json_api_object }
                                   else
                                     self.send(property.to_sym)
                                   end

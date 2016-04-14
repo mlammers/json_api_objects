@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe JsonApiObjects::JsonApiObject do
+
+  class LocationSalary
+  end
+
   class Test
     def existing_method
       'abc'
@@ -14,6 +18,10 @@ describe JsonApiObjects::JsonApiObject do
 
     def raw_job_id=(_value)
       'set id'
+    end
+
+    def location_salaries
+      [LocationSalary.new, LocationSalary.new]
     end
   end
 
@@ -94,7 +102,7 @@ describe JsonApiObjects::JsonApiObject do
       expect(Test.new.json_api_object).to eql ({ id: nil,
                                                   raw_job_id: 1234,
                                                   calculated_salary: nil,
-                                                  location_salaries: [] }).to_json
+                                                  location_salaries: [{amount: nil},{amount: nil}] }).to_json
     end
   end
 
