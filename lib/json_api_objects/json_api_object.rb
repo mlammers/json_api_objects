@@ -8,14 +8,14 @@ module JsonApiObjects
 
     def prepare
       schema.properties.each do |property, config|
-        create_setter(property) unless extended_class.instance_methods.include?((property + '=').to_sym) 
-        create_getter(property) unless extended_class.instance_methods.include?(property.to_sym) 
+        create_setter(property) unless extended_class.instance_methods.include?((property + '=').to_sym)
+        create_getter(property) unless extended_class.instance_methods.include?(property.to_sym)
         create_api_object_method
         case config['type']
         when 'object'
           self.class.prepare(Schema.init(schema.properties[property])) if config['type'] == 'object' # TODO: Create Config object with object? method
         when 'array'
-          self.class.prepare(Schema.init(config['items'])) 
+          self.class.prepare(Schema.init(config['items']))
         end
       end
     end
@@ -57,6 +57,9 @@ module JsonApiObjects
           return_hash[property] = case config["type"]
                                   when "object"
                                     self.send(property.to_sym).json_api_object
+                                  when "array"
+                                    return_array = self.send(property.to_sym) || []
+                                    return_array.map(&:json_api_object)
                                   else
                                     self.send(property.to_sym)
                                   end

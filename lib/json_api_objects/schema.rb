@@ -22,11 +22,11 @@ module JsonApiObjects
     def validate
       @errors = []
       # TODO: Fix validation
-      #JSON::Validator.fully_validate(JsonApiObjects.root + 'lib/json_api_objects/validation_schema.rb', raw_schema)
+      # JSON::Validator.fully_validate(JsonApiObjects.root + 'lib/json_api_objects/validation_schema.rb', raw_schema)
     end
 
-    def set_attributes(description: "",
-                       type:"",
+    def set_attributes(description: '',
+                       type:'',
                        properties:{},
                        required:[])
       @description = description

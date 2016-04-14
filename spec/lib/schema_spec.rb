@@ -12,17 +12,16 @@ describe JsonApiObjects::Schema do
     JsonApiObjects::Schema.new(raw_schema)
   end
 
-
-  describe ".init" do
-    it "does not raise errors" do
-      expect{ JsonApiObjects::Schema.init(raw_schema) }.to_not raise_error
+  describe '.init' do
+    it 'does not raise errors' do
+      expect { JsonApiObjects::Schema.init(raw_schema) }.to_not raise_error
     end
   end
 
-  describe "#validate"
+  describe '#validate'
 
-  describe "#set_attributes" do
-    it "sets attributes correctly" do
+  describe '#set_attributes' do
+    it 'sets attributes correctly' do
       subject.send(:set_attributes, symbolize_hash)
       expect(subject.description).to eql symbolize_hash[:description]
       expect(subject.type).to eql symbolize_hash[:type]
@@ -31,13 +30,13 @@ describe JsonApiObjects::Schema do
     end
   end
 
-  describe "#symbolized_hash" do
-    it "returns hash with symbolized keys" do
-      expect(subject.send(:symbolized_hash, {"a" => "a", "b" => "b"})).to eql({:a => "a", :b => "b"})
+  describe '#symbolized_hash' do
+    it 'returns hash with symbolized keys' do
+      expect(subject.send(:symbolized_hash, 'a' => 'a', 'b' => 'b')).to eql(a: 'a', b: 'b')
     end
 
-    it "cuts $schema key" do
-      expect(subject.send(:symbolized_hash, {"a" => "a", "$schema" => "test"})).to eql({:a => "a"})
+    it 'cuts $schema key' do
+      expect(subject.send(:symbolized_hash, 'a' => 'a', '$schema' => 'test')).to eql(a: 'a')
     end
   end
 
