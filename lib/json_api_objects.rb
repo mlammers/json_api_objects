@@ -11,20 +11,10 @@ module JsonApiObjects
     HOME
   end
 
-  # TODO: change folders to use root
-  def self.process(schema_folder: 'json_api_objects/schemas')
+  def self.process
+    # TODO: Add configuration parameters
     # validation_schema: 'json_api_objects/validation_schema')
-    # get schema_files from schema folder
-    dir = Dir.glob("#{schema_folder}/*.json")
-    schemas = []
-    errors = {}
-    dir.each do |filename|
-      file = open(filename) do |f|
-        data = f.read
-      end
-      schemas << JSON.parse(file)
-      # schemas << JSON.parse(file. object_class: JsonApiObjects::Schema)
-    end
+    schemas = fetch_schemas([root].join("/"))
     init schemas
   end
 
@@ -33,5 +23,20 @@ module JsonApiObjects
       JsonApiObjects::JsonApiObject.prepare(JsonApiObjects::Schema.init(schema))
     end
   end
+
+  private
+  
+  def self.fetch_schemas(folder)
+    dir = Dir.glob("#{folder}/*.json")
+    schemas = []
+    errors = {}
+    dir.each do |filename|
+      file = open(filename) do |f|
+        data = f.read
+      end
+      schemas << JSON.parse(file)
+    end
+    schemas
+  end
+
 end
-JsonApiObjects.process

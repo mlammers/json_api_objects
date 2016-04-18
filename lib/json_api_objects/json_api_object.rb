@@ -18,6 +18,7 @@ module JsonApiObjects
           self.class.prepare(Schema.init(config['items']))
         end
       end
+      # TODO: validate
     end
 
     private
@@ -48,7 +49,6 @@ module JsonApiObjects
       # verify required attributes
       # add all properties
       # TODO: Create config object
-      # TODO: set object return to actually return the resp. object
       extended_class.class_eval(
         <<EOF
       def json_api_object
@@ -68,6 +68,10 @@ module JsonApiObjects
       end
 EOF
       )
+    end
+
+    def validate
+      # JSON::Validator.fully_validate(validation_schema, json_api_object)
     end
   end
 end

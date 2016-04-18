@@ -8,6 +8,11 @@ describe JsonApiObjects::Schema do
     JSON.parse(file)
   end
 
+  let(:invalid_schema) do
+    {required: ["test_key"],
+     test_key: "this is invalid"}.to_json
+  end
+
   let(:subject) do
     JsonApiObjects::Schema.new(raw_schema)
   end
@@ -17,8 +22,6 @@ describe JsonApiObjects::Schema do
       expect { JsonApiObjects::Schema.init(raw_schema) }.to_not raise_error
     end
   end
-
-  describe '#validate'
 
   describe '#set_attributes' do
     it 'sets attributes correctly' do
