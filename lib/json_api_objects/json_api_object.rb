@@ -67,6 +67,7 @@ module JsonApiObjects
           return_hash.to_json
         else
           # TODO: return errors
+          return_hash.to_json
         end
       end
 EOF
@@ -78,10 +79,11 @@ EOF
       extended_class.class_eval(
         <<EOF
       def validate_json_api_object(json_api_object_hash)
-        @_validation_schema = open(::JsonApiObjects.root + 'lib/json_api_objects/validation_schema') do |file|
+        @_validation_schema = open(::JsonApiObjects.root + 'lib/json_api_objects/schemas/validation_schema') do |file|
                                 data = file.read
                               end
-        JSON::Validator.fully_validate(@_validation_schema, json_api_object_hash)
+        # s. https://github.com/ruby-json-schema/json-schema
+        JSON::Validator.fully_validate(@_validation_schema, json_api_object_hash, errors_as_objects: true)
       end
 EOF
       )

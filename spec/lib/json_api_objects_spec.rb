@@ -46,6 +46,8 @@ describe JsonApiObjects::JsonApiObject do
       expect { Test2 }.to_not raise_error
     end
 
+    it 'works for namespaces'
+
   end
 
   describe '#create_setter' do
