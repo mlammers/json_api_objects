@@ -17,8 +17,8 @@ module JsonApiObjects
         when 'array'
           self.class.prepare(Schema.init(config['items']))
         end
+        create_validation_method
       end
-      # TODO: validate
     end
 
     private
@@ -46,8 +46,6 @@ module JsonApiObjects
     end
 
     def create_api_object_method
-      # verify required attributes
-      # add all properties
       # TODO: Create config object
       extended_class.class_eval(
         <<EOF
@@ -64,14 +62,29 @@ module JsonApiObjects
                                     self.send(property.to_sym)
                                   end
         end
-        return_hash.to_json
+        errors = validate_json_api_object(return_hash.to_json)
+        if errors.empty?
+          return_hash.to_json
+        else
+          # TODO: return errors
+        end
       end
 EOF
       )
     end
 
-    def validate
-      # JSON::Validator.fully_validate(validation_schema, json_api_object)
+    def create_validation_method
+      # TODO: validate and handle errors
+      extended_class.class_eval(
+        <<EOF
+      def validate_json_api_object(json_api_object_hash)
+        @_validation_schema = open(::JsonApiObjects.root + 'lib/json_api_objects/validation_schema') do |file|
+                                data = file.read
+                              end
+        JSON::Validator.fully_validate(@_validation_schema, json_api_object_hash)
+      end
+EOF
+      )
     end
   end
 end
