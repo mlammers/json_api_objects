@@ -11,10 +11,8 @@ module JsonApiObjects
     HOME
   end
 
-  def self.process
-    # TODO: Add configuration parameters
-    # validation_schema: 'json_api_objects/validation_schema')
-    schemas = fetch_schemas([root].join("/"))
+  def self.process(schema_path: [root, 'lib/schemas'].join("/"))
+    schemas = fetch_schemas([schema_path].join("/"))
     init schemas
   end
 
