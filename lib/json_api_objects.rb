@@ -5,14 +5,25 @@ require_relative 'json_api_objects/json_api_object'
 require_relative 'json_api_objects/schema'
 
 module JsonApiObjects
+
   HOME = Pathname.new(File.join(File.dirname(__FILE__), '..')).realpath
+
+  if defined? ::Rails::Engine
+    # auto wire assets as Rails Engine
+    class Rails < ::Rails::Engine
+    end
+
+  elsif defined? ::Sprockets
+    # Set up asset paths for Sprockets apps
+    ::Sprockets.append_path File.join(root, "vendor", "assets", "javascripts")
+  end
 
   def self.root
     HOME
   end
 
-  def self.process(schema_path: [root, 'lib/schemas'].join("/"))
-    schemas = fetch_schemas([schema_path].join("/"))
+  def self.process(schema_path: File.join(root, "lib", "schemas"))
+    schemas = fetch_schemas(schema_path)
     init schemas
   end
 
