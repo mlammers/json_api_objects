@@ -47,6 +47,7 @@ module JsonApiObjects
 
     def create_api_object_method
       # TODO: Create config object
+      # TODO: Add base key
       extended_class.class_eval(
         <<EOF
       def json_api_object
@@ -62,13 +63,13 @@ module JsonApiObjects
                                     self.send(property.to_sym)
                                   end
         end
-        errors = validate_json_api_object(return_hash.to_json)
-        if errors.empty?
+        #We're running into an error in the used library here. TODO: Fork and fix
+        #errors = validate_json_api_object(return_hash.to_json)
+        #if errors.empty?
+        #  return_hash.to_json
+        #else
           return_hash.to_json
-        else
-          # TODO: return errors
-          return_hash.to_json
-        end
+        #end
       end
 EOF
       )
@@ -83,7 +84,7 @@ EOF
                                 data = file.read
                               end
         # s. https://github.com/ruby-json-schema/json-schema
-        JSON::Validator.fully_validate(@_validation_schema, json_api_object_hash, errors_as_objects: true)
+        ::JSON::Validator.fully_validate(@_validation_schema, json_api_object_hash, errors_as_objects: true)
       end
 EOF
       )
