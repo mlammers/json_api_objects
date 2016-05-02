@@ -1,5 +1,3 @@
-require 'json'
-require 'json-schema'
 require_relative 'json_api_objects/version'
 require_relative 'json_api_objects/json_api_object'
 require_relative 'json_api_objects/schema'
