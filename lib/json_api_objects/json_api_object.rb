@@ -8,12 +8,13 @@ module JsonApiObjects
 
     def prepare
       schema.properties.each do |property, config|
-        create_setter(property) unless extended_class.instance_methods.include?((property + '=').to_sym)
-        create_getter(property) unless extended_class.instance_methods.include?(property.to_sym)
+        create_setter(property)
+        create_getter(property) 
         create_api_object_method
         case config['type']
         when 'object'
-          self.class.prepare(Schema.init(schema.properties[property])) if config['type'] == 'object' # TODO: Create Config object with object? method
+          subschema = Schema.init(schema.properties[property])
+          self.class.prepare(subschema) unless JsonApiObjects::Schema.object_class_names.include? subschema.description 
         when 'array'
           self.class.prepare(Schema.init(config['items']))
         end
@@ -38,10 +39,12 @@ module JsonApiObjects
     end
 
     def create_setter(property)
+      return nil if extended_class.instance_methods.include?((property + '=').to_sym)
       extended_class.class_eval("def #{property}=(value);@#{property}=value;end")
     end
 
     def create_getter(property)
+      return nil if extended_class.instance_methods.include?(property.to_sym)
       extended_class.class_eval("def #{property};@#{property};end")
     end
 

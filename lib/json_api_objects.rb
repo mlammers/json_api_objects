@@ -26,8 +26,10 @@ module JsonApiObjects
   end
 
   def self.init(schemas)
+    schemas.map!{|raw_schema| JsonApiObjects::Schema.init(raw_schema)}
+    JsonApiObjects::Schema.set_object_classes(schemas)
     schemas.each do |schema|
-      JsonApiObjects::JsonApiObject.prepare(JsonApiObjects::Schema.init(schema))
+      JsonApiObjects::JsonApiObject.prepare(schema) 
     end
   end
 
@@ -45,5 +47,5 @@ module JsonApiObjects
     end
     schemas
   end
-
+  
 end

@@ -1,9 +1,18 @@
 module JsonApiObjects
-class Schema
+  class Schema
     attr_accessor :raw_schema, :errors, :api_object_class, :description, :type, :properties, :required_attributes
 
     def self.init(raw_schema)
       new(raw_schema).init
+    end
+
+    def self.set_object_classes(schemas)
+      @object_classes ||= {}
+      schemas.map{ |schema| @object_classes[schema.description] = schema }
+    end
+
+    def self.object_class_names
+      @object_classes.keys
     end
 
     def init
